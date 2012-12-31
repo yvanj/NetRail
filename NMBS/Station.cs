@@ -13,19 +13,19 @@ namespace NetRail.NMBS
         /// <summary>
         /// The ID of the station
         /// </summary>
-        string Id { get; set; }
+        public string Id { get; set; }
         /// <summary>
         /// The name of the station
         /// </summary>
-        string Name { get; set; }
+        public string Name { get; set; }
         /// <summary>
         /// The longitude of the station
         /// </summary>
-        float Longitude { get; set; }
+        public float Longitude { get; set; }
         /// <summary>
         /// The latitude of the station
         /// </summary>
-        float Latitude { get; set; }
+        public float Latitude { get; set; }
 
         /// <summary>
         /// A list of the current departures in the station
