@@ -66,7 +66,7 @@ namespace NetRail.NMBS
                             Direction = Stations().First(p => p.Id == departure.Element("station").Attribute("id").Value),
                             Delay = int.Parse(departure.Attribute("delay").Value),
                             Platform = departure.Element("platform").Value,
-                            PlatformChanged = departure.Element("platform").Attribute("normal").Value == "1",
+                            PlatformChanged = departure.Element("platform").Attribute("normal").Value != "1",
                             Time = DateTime.Parse(departure.Element("time").Attribute("formatted").Value),
                             Vehicle = Vehicle(departure.Element("vehicle").Value)
                        };
@@ -135,6 +135,92 @@ namespace NetRail.NMBS
 
             return v;
         }
+
+		private IList<Via> parseVias (XElement viasElement)
+		{
+			var vias = from via in viasElement.Descendants("via")
+				select new Via {
+				ArrivalPlatform = via.Element("arrival").Element("platform").Value,
+				ArrivalPlatformChanged = via.Element("arrival").Element("platform").Attribute("normal").Value != "1",
+				ArrivalTime = DateTime.Parse(via.Element("arrival").Element("time").Attribute("formatted").Value),
+				DeparturePlatform = via.Element("departure").Element("platform").Value,
+				DeparturePlatformChanged = via.Element("departure").Element("platform").Attribute("normal").Value != "1",
+				DepartureTime = DateTime.Parse(via.Element("departure").Element("time").Attribute("formatted").Value),
+
+				Station = Stations().First(s => s.Id == via.Element("station").Attribute("id").Value),
+				DestinationStation = Stations().First(s => s.Id == via.Element("direction").Attribute("id").Value),
+				VehicleUsed = Vehicle(via.Element("vehicle").Value),
+				TimeBetween = int.Parse(via.Element("timeBetween").Value),
+
+			};
+			return vias.ToList<Via>();
+		}
+
+		/// <summary>
+		/// parses the XDocument containing the connections.
+		/// </summary>
+		/// <returns>
+		/// An IList containing instances of the Connection object.
+		/// </returns>
+		/// <param name='documentToParse'>
+		/// The document which requires parsing.
+		/// </param>
+		private IList<Connection> _parseConnections(XDocument documentToParse) {
+			var connections = from connection in documentToParse.Descendants("connection")
+			select new Connection {
+				DepartureStation = Stations().First(s => s.Id == connection.Element("departure").Element("station").Attribute("id").Value),
+				ArrivalStation = Stations().First(s => s.Id == connection.Element("arrival").Element("station").Attribute("id").Value),
+				ArrivalPlatform = connection.Element("arrival").Element("platform").Value,
+				ArrivalPlatformChanged = connection.Element("arrival").Element("platform").Attribute("normal").Value != "1",
+				DeparturePlatformChanged = connection.Element("departure").Element("platform").Attribute("normal").Value != "1",
+				ArrivalTime = DateTime.Parse(connection.Element("arrival").Element("time").Attribute("formatted").Value),
+				DepartureTime = DateTime.Parse(connection.Element("departure").Element("time").Attribute("formatted").Value),
+				DeparturePlatform = connection.Element("departure").Element("platform").Value,
+				Vias = parseVias(connection.Element("vias"))
+			};
+			return connections.ToList<Connection>();
+		}
+
+
+		/// <summary>
+		/// Connections between the specified stations
+		/// </summary>
+		/// <param name='fromStation'>
+		/// The station of departure.
+		/// </param>
+		/// <param name='destinationStation'>
+		/// The station of destination.
+		/// </param>
+		public IList<Connection> Connections (Station fromStation, Station destinationStation)
+		{
+			var doc = XDocument.Parse(ConnectionXML(Language.ToString(), fromStation.Name, destinationStation.Name));
+			return _parseConnections(doc);
+		}
+
+		/// <summary>
+		/// Connections between the specified stations at the given moment.
+		/// The moment can either be the time of arrival or the time of departure.
+		/// </summary>
+		/// <param name='fromStation'>
+		/// FThe station of departure.
+		/// </param>
+		/// <param name='destinationStation'>
+		/// The station of destination.
+		/// </param>
+		/// <param name='TimeType'>
+		/// The type of the time. Passing NMBSTimeSelection.DepartureTime will force the specified
+		/// moment to be interpreted as the time of departure, specifying NMBSTimeSelection.ArrivalTime 
+		/// will mark the moment specified as the time of arrival.
+		/// </param>
+		/// <param name='moment'>
+		/// The time and date to which the data should be applicable.
+		/// </param>
+		public IList<Connection> Connections (Station fromStation, Station destinationStation, NMBSTimeSelection timeType, DateTime moment)
+		{
+			var doc = XDocument.Parse(ConnectionXML(Language.ToString(), fromStation.Name, destinationStation.Name, moment, timeType));
+			return _parseConnections(doc);
+		}
+
 
         /// <summary>
         /// Initializes a new NMBS wrapper class with the specified language
@@ -207,7 +293,7 @@ namespace NetRail.NMBS
 		/// </param>
 		private string ConnectionXML(string lang, string fromStation, string toStation) {
 			WebClient client = new WebClient();
-			return client.DownloadString(String.Format("{0}/{1}/?lang={2}&to={3}&from={4}", BASE_URL, "connections", lang, toStation, fromStation));
+			return client.DownloadString(String.Format("{0}/{1}/?lang={2}&to={3}&from={4}", BaseUrl, "connections", lang, toStation, fromStation));
 		}
 
 		/// <summary>
@@ -228,10 +314,12 @@ namespace NetRail.NMBS
 		/// <param name='momentOfDeparture'>
 		/// Moment of departure.
 		/// </param>
-		private string ConnectionXML(string lang, string fromStation, string toStation, string momentOfDeparture) {
+		private string ConnectionXML(string lang, string fromStation, string toStation, DateTime momentOfDeparture, NMBSTimeSelection timeSelection) {
 			WebClient client = new WebClient();
-			// TODO: update URL.
-			return client.DownloadString(String.Format("{0}/{1}/?lang={2}&to={3}&from={4}", BASE_URL, "connections", lang, toStation, fromStation));
+			return client.DownloadString(String.Format("{0}/{1}/?lang={2}&to={3}&from={4}&date={5:ddMMyy}&time={6:HHmm}&timeSel={7}", BaseUrl, "connections", lang, toStation, 
+			                                           fromStation, momentOfDeparture, momentOfDeparture,
+			                                           timeSelection == NMBSTimeSelection.DepartureTime ? "depart" : "arrive"
+			                                           ));
 		}
     }
 }
