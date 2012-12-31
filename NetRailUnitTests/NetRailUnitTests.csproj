@@ -50,14 +50,8 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConnectionTest.cs" />
-    <Compile Include="DepartureTest.cs" />
     <Compile Include="NMBSTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StationTest.cs" />
-    <Compile Include="StopTest.cs" />
-    <Compile Include="VehicleTest.cs" />
-    <Compile Include="ViaTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NetRail\NetRail.csproj">
