@@ -21,6 +21,22 @@ namespace NetRail.NMBS
 		public DateTime DepartureTime { get; set; }
 
 		/// <summary>
+		/// Gets or sets the arrival platform.
+		/// </summary>
+		/// <value>
+		/// The arrival platform.
+		/// </value>
+		public string ArrivalPlatform { get; set; }
+
+		/// <summary>
+		/// Gets or sets the departure platform.
+		/// </summary>
+		/// <value>
+		/// The departure platform.
+		/// </value>
+		public string DeparturePlatform { get; set; }
+
+		/// <summary>
 		/// Gets or sets the time between transits.
 		/// </summary>
 		/// <value>
