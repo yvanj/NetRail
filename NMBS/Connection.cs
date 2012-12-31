@@ -83,7 +83,7 @@ namespace NetRail.NMBS
 		/// <value>
 		/// The vias.
 		/// </value>
-		public List<Via> Vias { get; set; }
+		public IList<Via> Vias { get; set; }
 
 		public Connection ()
 		{
