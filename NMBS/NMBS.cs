@@ -50,8 +50,8 @@ namespace NetRail.NMBS
                        select new Station
                        {
                             Id = station.Attribute("id").Value,
-                            Latitude = float.Parse(station.Attribute("latitude").Value),
-                            Longitude = float.Parse(station.Attribute("longitude").Value),
+                            Latitude = float.Parse(station.Attribute("locationY").Value),
+                            Longitude = float.Parse(station.Attribute("locationX").Value),
                             Name = station.Value
                        };
 

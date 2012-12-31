@@ -1,0 +1,5 @@
+C:\Users\Yvan\documents\visual studio 2010\Projects\NetRail\NetRail\bin\Debug\NetRail.dll
+C:\Users\Yvan\documents\visual studio 2010\Projects\NetRail\NetRail\bin\Debug\NetRail.pdb
+C:\Users\Yvan\documents\visual studio 2010\Projects\NetRail\NetRail\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Yvan\documents\visual studio 2010\Projects\NetRail\NetRail\obj\Debug\NetRail.dll
+C:\Users\Yvan\documents\visual studio 2010\Projects\NetRail\NetRail\obj\Debug\NetRail.pdb
