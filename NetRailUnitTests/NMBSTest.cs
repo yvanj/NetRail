@@ -1,9 +1,10 @@
 ﻿using NetRail.NMBS;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using NetRail;
 using System.Collections.Generic;
-using System.Xml.Linq;
+using System.Collections;
+using NetRail;
+using System.Linq;
 
 namespace NetRailUnitTests
 {
@@ -68,269 +69,82 @@ namespace NetRailUnitTests
 
 
         /// <summary>
-        ///A test for NMBS Constructor
+        /// Tests if a list of stations can be fetched in every language.
         ///</summary>
         [TestMethod()]
-        public void NMBSConstructorTest()
+        public void StationsTestInEveryLanguage()
         {
-            NMBSLanguage language = new NMBSLanguage(); // TODO: Initialize to an appropriate value
-            NMBS target = new NMBS(language);
-            Assert.Inconclusive("TODO: Implement code to verify target");
+            int first_amount = 0;
+            NMBS target = new NMBS(NMBSLanguage.DE);
+            first_amount = target.Stations().Count;
+            Assert.IsFalse( first_amount < 1, "No stations could be fetched");
+
+            target = new NMBS(NMBSLanguage.EN);
+            Assert.IsTrue(target.Stations().Count == first_amount, "EN list of stations behaves odd");
+            target = new NMBS(NMBSLanguage.FR);
+            Assert.IsTrue(target.Stations().Count == first_amount, "FR list of stations behaves odd");
+            target = new NMBS(NMBSLanguage.NL);
+            Assert.IsTrue(target.Stations().Count == first_amount, "NL list of stations behaves odd");
+
         }
 
         /// <summary>
-        ///A test for NMBS Constructor
-        ///</summary>
-        [TestMethod()]
-        public void NMBSConstructorTest1()
-        {
-            NMBS target = new NMBS();
-            Assert.Inconclusive("TODO: Implement code to verify target");
-        }
-
-        /// <summary>
-        ///A test for ConnectionXML
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("NetRail.dll")]
-        public void ConnectionXMLTest()
-        {
-            NMBS_Accessor target = new NMBS_Accessor(); // TODO: Initialize to an appropriate value
-            string lang = string.Empty; // TODO: Initialize to an appropriate value
-            string fromStation = string.Empty; // TODO: Initialize to an appropriate value
-            string toStation = string.Empty; // TODO: Initialize to an appropriate value
-            DateTime momentOfDeparture = new DateTime(); // TODO: Initialize to an appropriate value
-            NMBSTimeSelection timeSelection = new NMBSTimeSelection(); // TODO: Initialize to an appropriate value
-            string expected = string.Empty; // TODO: Initialize to an appropriate value
-            string actual;
-            actual = target.ConnectionXML(lang, fromStation, toStation, momentOfDeparture, timeSelection);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for ConnectionXML
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("NetRail.dll")]
-        public void ConnectionXMLTest1()
-        {
-            NMBS_Accessor target = new NMBS_Accessor(); // TODO: Initialize to an appropriate value
-            string lang = string.Empty; // TODO: Initialize to an appropriate value
-            string fromStation = string.Empty; // TODO: Initialize to an appropriate value
-            string toStation = string.Empty; // TODO: Initialize to an appropriate value
-            string expected = string.Empty; // TODO: Initialize to an appropriate value
-            string actual;
-            actual = target.ConnectionXML(lang, fromStation, toStation);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for Connections
+        /// Tests the functionality of the Connections handler.
+        /// It simulates four queries with random data.
         ///</summary>
         [TestMethod()]
         public void ConnectionsTest()
         {
-            NMBS target = new NMBS(); // TODO: Initialize to an appropriate value
-            Station fromStation = null; // TODO: Initialize to an appropriate value
-            Station destinationStation = null; // TODO: Initialize to an appropriate value
-            IList<Connection> expected = null; // TODO: Initialize to an appropriate value
-            IList<Connection> actual;
-            actual = target.Connections(fromStation, destinationStation);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
+            NMBS target = new NMBS();
+            Random r = new Random();
+
+            for (int i = 0; i < 4; i++)
+            {
+                Station fromStation = target.Stations().ElementAt(r.Next(target.Stations().Count));
+                Station destinationStation = target.Stations().ElementAt(r.Next(target.Stations().Count));
+                IList<Connection> actual;
+                actual = target.Connections(fromStation, destinationStation);
+                
+            }
         }
 
         /// <summary>
-        ///A test for Connections
+        /// Tests for arriving/departing tomorrow around 12 between two random stations.
         ///</summary>
         [TestMethod()]
         public void ConnectionsTest1()
         {
-            NMBS target = new NMBS(); // TODO: Initialize to an appropriate value
-            Station fromStation = null; // TODO: Initialize to an appropriate value
-            Station destinationStation = null; // TODO: Initialize to an appropriate value
-            NMBSTimeSelection timeType = new NMBSTimeSelection(); // TODO: Initialize to an appropriate value
-            DateTime moment = new DateTime(); // TODO: Initialize to an appropriate value
-            IList<Connection> expected = null; // TODO: Initialize to an appropriate value
+            NMBS target = new NMBS();
+            Random r = new Random();
+            Station fromStation = target.Stations().ElementAt(r.Next(target.Stations().Count));
+            Station destinationStation = target.Stations().ElementAt(r.Next(target.Stations().Count));
+            NMBSTimeSelection timeType = NMBSTimeSelection.DepartureTime; 
+            DateTime moment = DateTime.Now.AddDays(1);
             IList<Connection> actual;
             actual = target.Connections(fromStation, destinationStation, timeType, moment);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
+            Assert.IsTrue(actual.Count > 0,String.Format("Departing at {0} from {1} to {2} failed.", moment, fromStation.Name, destinationStation.Name));
+            timeType = NMBSTimeSelection.DepartureTime;
+            actual = target.Connections(fromStation, destinationStation, timeType, moment);
+            Assert.IsTrue(actual.Count > 0, String.Format( "Arriving at {0} from {1} to {2} failed.", moment, fromStation.Name, destinationStation.Name));
         }
 
         /// <summary>
-        ///A test for DeparturesXML
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("NetRail.dll")]
-        public void DeparturesXMLTest()
-        {
-            NMBS_Accessor target = new NMBS_Accessor(); // TODO: Initialize to an appropriate value
-            string lang = string.Empty; // TODO: Initialize to an appropriate value
-            string id = string.Empty; // TODO: Initialize to an appropriate value
-            string expected = string.Empty; // TODO: Initialize to an appropriate value
-            string actual;
-            actual = target.DeparturesXML(lang, id);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for Liveboard
+        ///  Tests the basic functionality of the Liveboard.
         ///</summary>
         [TestMethod()]
         public void LiveboardTest()
         {
-            NMBS target = new NMBS(); // TODO: Initialize to an appropriate value
-            string stationName = string.Empty; // TODO: Initialize to an appropriate value
-            IList<Departure> expected = null; // TODO: Initialize to an appropriate value
-            IList<Departure> actual;
-            actual = target.Liveboard(stationName);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for Liveboard
-        ///</summary>
-        [TestMethod()]
-        public void LiveboardTest1()
-        {
-            NMBS target = new NMBS(); // TODO: Initialize to an appropriate value
-            Station station = null; // TODO: Initialize to an appropriate value
-            IList<Departure> expected = null; // TODO: Initialize to an appropriate value
+            NMBS target = new NMBS();
+            Random r = new Random();
+            Station station = target.Stations().ElementAt(r.Next(target.Stations().Count));
+             
             IList<Departure> actual;
             actual = target.Liveboard(station);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
+            Assert.IsNull(actual, "Failed to fetch a liveboard for " + station.Name);
+           
         }
 
-        /// <summary>
-        ///A test for Stations
-        ///</summary>
-        [TestMethod()]
-        public void StationsTest()
-        {
-            NMBS target = new NMBS(); // TODO: Initialize to an appropriate value
-            IList<Station> expected = null; // TODO: Initialize to an appropriate value
-            IList<Station> actual;
-            actual = target.Stations();
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
 
-        /// <summary>
-        ///A test for StationsXML
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("NetRail.dll")]
-        public void StationsXMLTest()
-        {
-            NMBS_Accessor target = new NMBS_Accessor(); // TODO: Initialize to an appropriate value
-            string lang = string.Empty; // TODO: Initialize to an appropriate value
-            string expected = string.Empty; // TODO: Initialize to an appropriate value
-            string actual;
-            actual = target.StationsXML(lang);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for Vehicle
-        ///</summary>
-        [TestMethod()]
-        public void VehicleTest()
-        {
-            NMBS target = new NMBS(); // TODO: Initialize to an appropriate value
-            string id = string.Empty; // TODO: Initialize to an appropriate value
-            Vehicle expected = null; // TODO: Initialize to an appropriate value
-            Vehicle actual;
-            actual = target.Vehicle(id);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for VehicleXML
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("NetRail.dll")]
-        public void VehicleXMLTest()
-        {
-            NMBS_Accessor target = new NMBS_Accessor(); // TODO: Initialize to an appropriate value
-            string lang = string.Empty; // TODO: Initialize to an appropriate value
-            string id = string.Empty; // TODO: Initialize to an appropriate value
-            string expected = string.Empty; // TODO: Initialize to an appropriate value
-            string actual;
-            actual = target.VehicleXML(lang, id);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for _Liveboard
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("NetRail.dll")]
-        public void _LiveboardTest()
-        {
-            NMBS_Accessor target = new NMBS_Accessor(); // TODO: Initialize to an appropriate value
-            string stationId = string.Empty; // TODO: Initialize to an appropriate value
-            IList<Departure> expected = null; // TODO: Initialize to an appropriate value
-            IList<Departure> actual;
-            actual = target._Liveboard(stationId);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for _parseConnections
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("NetRail.dll")]
-        public void _parseConnectionsTest()
-        {
-            NMBS_Accessor target = new NMBS_Accessor(); // TODO: Initialize to an appropriate value
-            XDocument documentToParse = null; // TODO: Initialize to an appropriate value
-            IList<Connection> expected = null; // TODO: Initialize to an appropriate value
-            IList<Connection> actual;
-            actual = target._parseConnections(documentToParse);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for parseVias
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("NetRail.dll")]
-        public void parseViasTest()
-        {
-            NMBS_Accessor target = new NMBS_Accessor(); // TODO: Initialize to an appropriate value
-            XElement viasElement = null; // TODO: Initialize to an appropriate value
-            IList<Via> expected = null; // TODO: Initialize to an appropriate value
-            IList<Via> actual;
-            actual = target.parseVias(viasElement);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
-
-        /// <summary>
-        ///A test for Language
-        ///</summary>
-        [TestMethod()]
-        [DeploymentItem("NetRail.dll")]
-        public void LanguageTest()
-        {
-            NMBS_Accessor target = new NMBS_Accessor(); // TODO: Initialize to an appropriate value
-            NMBSLanguage expected = new NMBSLanguage(); // TODO: Initialize to an appropriate value
-            NMBSLanguage actual;
-            target.Language = expected;
-            actual = target.Language;
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
-        }
+      
     }
 }
