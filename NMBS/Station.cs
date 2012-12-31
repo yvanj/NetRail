@@ -35,8 +35,8 @@ namespace NetRail.NMBS
             
             get
             {
-                // TODO: make the Station fetch the Departures.
-                return null;
+                NMBS n = new NMBS();
+                return n.Liveboard(this);
             }
             set
             {

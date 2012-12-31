@@ -21,11 +21,11 @@ namespace NetRail.NMBS
         /// <summary>
         /// The termination point of the station
         /// </summary>
-        public string Direction { get; set; }
+        public Station Direction { get; set; }
         /// <summary>
-        /// The ID of the vehicle of the train
+        /// The vehicle object related to the departure.
         /// </summary>
-        public string Vehicle { get; set; }
+        public Vehicle Vehicle { get; set; }
         /// <summary>
         /// The number of the platform of the train
         /// </summary>

@@ -15,21 +15,22 @@ namespace NetRail.NMBS
         /// </summary>
         public string Id { get; set; }
 
-        
+        /// <summary>
+        /// The latitude of the vehicle
+        /// </summary>
+        public float Latitude { get; set; }
+
+        /// <summary>
+        /// The longitude of the vehicle
+        /// </summary>
+        public float Longitude { get; set; }
         /// <summary>
         /// The list of stations in which this train stops.
         /// </summary>
         public List<Stop> Stops
         {
-            get
-            {
-                // TODO: implement stops fetching.
-                return null;
-            }
-            set
-            {
-
-            }
+            get;
+            set;
         }
     }
 }
