@@ -72,7 +72,7 @@ namespace NetRail.NMBS
             var data = from departure in doc.Descendants("departure")
                        select new Departure
                        {
-                            Direction = Stations().First(p => p.Name == departure.Element("station").Attribute("id").Value),
+                            Direction = Stations().First(p => p.Id == departure.Element("station").Attribute("id").Value),
                             Delay = int.Parse(departure.Attribute("delay").Value),
                             Platform = departure.Element("platform").Value,
                             PlatformChanged = departure.Element("platform").Attribute("normal").Value == "1",
@@ -116,12 +116,12 @@ namespace NetRail.NMBS
         public Vehicle Vehicle(string Id)
         {
             XDocument doc = XDocument.Parse(VehicleXML(Language.ToString(), Id));
-            var vehicle_data = (from vehicle in doc.Descendants("vehicleinformation")
+            var vehicle_data = (from vehicle in doc.Descendants("vehicle")
                                 select new
                                 {
                                     location_x = vehicle.Attribute("locationX").Value,
                                     location_y = vehicle.Attribute("locationY").Value,
-                                    id = vehicle.Attribute("id").Value
+                                    id = vehicle.Value
                                 }).First();
 
             Vehicle v = new Vehicle();
@@ -132,7 +132,7 @@ namespace NetRail.NMBS
             var stops = from stop in doc.Descendants("stop")
                         select new Stop
                         {
-                            Station = Stations().First(p => p.Name == stop.Element("station").Attribute("id").Value),
+                            Station = Stations().First(p => p.Id == stop.Element("station").Attribute("id").Value),
                             Time = DateTime.Parse(stop.Element("time").Attribute("formatted").Value)
                         };
 
@@ -177,7 +177,7 @@ namespace NetRail.NMBS
         private string DeparturesXML(String lang, String id)
         {
             WebClient client = new WebClient();
-            return client.DownloadString(String.Format("{0}/{1}/id={3}&?lang={2}", BASE_URL, "liveboard", lang, id));
+            return client.DownloadString(String.Format("{0}/{1}/?id={3}&lang={2}", BASE_URL, "liveboard", lang, id));
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace NetRail.NMBS
         private string VehicleXML(String lang, String id)
         {
             WebClient client = new WebClient();
-            return client.DownloadString(String.Format("{0}/{1}/id={3}&?lang={2}", BASE_URL, "vehicle", lang, id));
+            return client.DownloadString(String.Format("{0}/{1}/?id={3}&lang={2}", BASE_URL, "vehicle", lang, id));
         }
     }
 }
