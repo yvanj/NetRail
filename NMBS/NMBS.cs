@@ -232,6 +232,7 @@ namespace NetRail.NMBS
 		/// </param>
 		private string ConnectionXML(String lang, String fromStation, String toStation, DateTime momentOfDeparture) {
 			WebClient client = new WebClient();
+			// TODO: update URL.
 			return client.DownloadString(String.Format("{0}/{1}/?lang={2}&to={3}&from={4}", BASE_URL, "connections", lang, toStation, fromStation));
 		}
     }
