@@ -176,7 +176,8 @@ namespace NetRail.NMBS
 				ArrivalTime = DateTime.Parse(connection.Element("arrival").Element("time").Attribute("formatted").Value),
 				DepartureTime = DateTime.Parse(connection.Element("departure").Element("time").Attribute("formatted").Value),
 				DeparturePlatform = connection.Element("departure").Element("platform").Value,
-				Vias = parseVias(connection.Element("vias"))
+				Vias = parseVias(connection.Element("vias")),
+                Duration = int.Parse(connection.Element("duration").Value)
 			};
 			return connections.ToList<Connection>();
 		}
