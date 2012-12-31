@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="NMBS\Departure.cs" />
     <Compile Include="NMBS\NMBS.cs" />
+    <Compile Include="NMBS\NMBSLanguage.cs" />
     <Compile Include="NMBS\Station.cs" />
     <Compile Include="NMBS\Stop.cs" />
     <Compile Include="NMBS\Vehicle.cs" />

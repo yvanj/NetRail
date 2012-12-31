@@ -1,34 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Net;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace NetRail.NMBS
 {
-    public enum NMBSLanguage
-    {
-        NL,
-        EN,
-        FR,
-        DE
-    }
-
     public class NMBS
     {
         /// <summary>
         /// The base URL to form API calls on.
         /// </summary>
-        private const string BASE_URL = "http://api.irail.be";
+        private const string BaseUrl = "http://api.irail.be";
 
         /// <summary>
         /// Contains the stations list. This is cached to prevent multiple useless requests
         /// to the server, resulting in a faster client with slightly less accurate data if
         /// NMBS plans to change a station's name or location during runtime.
         /// </summary>
-        private List<Station> CachedStationsList;
+        private IList<Station> _cachedStationsList;
 
         /// <summary>
         /// The language of the data.
@@ -39,12 +29,12 @@ namespace NetRail.NMBS
         /// Gets the list of stations
         /// </summary>
         /// <returns>A list of stations</returns>
-        public List<Station> Stations()
+        public IList<Station> Stations()
         {
-            if (CachedStationsList != null)
-                return CachedStationsList;
+            if (_cachedStationsList != null)
+                return _cachedStationsList;
 
-            XDocument doc = XDocument.Parse(StationsXML(Language.ToString()));
+            var doc = XDocument.Parse(StationsXML(Language.ToString()));
 
             var data = from station in doc.Descendants("station")
                        select new Station
@@ -55,7 +45,7 @@ namespace NetRail.NMBS
                             Name = station.Value
                        };
 
-            CachedStationsList = data.ToList<Station>();
+            _cachedStationsList = data.ToList();
 
             return Stations() ;
         }
@@ -64,11 +54,12 @@ namespace NetRail.NMBS
         /// <summary>
         /// Fetches the departures based on the station id.
         /// </summary>
-        /// <param name="StationID">A string containing the station ID.</param>
+        /// <param name="stationId">A string containing the station ID.</param>
         /// <returns>A list of departures for the specified station</returns>
-        private List<Departure> _Liveboard(string StationID)
+        private IList<Departure> _Liveboard(string stationId)
         {
-            XDocument doc = XDocument.Parse(DeparturesXML(Language.ToString(), StationID));
+            var doc = XDocument.Parse(DeparturesXML(Language.ToString(), stationId));
+
             var data = from departure in doc.Descendants("departure")
                        select new Departure
                        {
@@ -80,7 +71,7 @@ namespace NetRail.NMBS
                             Vehicle = Vehicle(departure.Element("vehicle").Value)
                        };
 
-            return data.ToList<Departure>();
+            return data.ToList();
         }
 
 
@@ -89,7 +80,7 @@ namespace NetRail.NMBS
         /// </summary>
         /// <param name="station">The station to query</param>
         /// <returns>A list of departures for the station</returns>
-        public List<Departure> Liveboard(Station station)
+        public IList<Departure> Liveboard(Station station)
         {
             return _Liveboard(station.Id);
         }
@@ -97,26 +88,28 @@ namespace NetRail.NMBS
         /// <summary>
         /// Gets the liveboard for a specific station
         /// </summary>
-        /// <param name="StationName">A string containing the name of the station</param>
+        /// <param name="stationName">A string containing the name of the station</param>
         /// <returns>A list of departures for that station</returns>
-        public List<Departure> Liveboard(string StationName)
+        public IList<Departure> Liveboard(string stationName)
         {
-            var applicable_stations = from station in Stations()
-                                      where station.Name.ToUpper().Contains(StationName.ToUpper())
-                                      select station;
-            return Liveboard(applicable_stations.First());
+            var applicableStations = from station in Stations()
+                                     where station.Name.ToUpper().Contains(stationName.ToUpper())
+                                     select station;
+
+            return Liveboard(applicableStations.First());
         }
 
 
         /// <summary>
         /// Returns the vehicle associated with the specified Vehicle ID.
         /// </summary>
-        /// <param name="Id">The ID of the vehicle</param>
+        /// <param name="id">The ID of the vehicle</param>
         /// <returns>An object containing the data of the vehicle.</returns>
-        public Vehicle Vehicle(string Id)
+        public Vehicle Vehicle(string id)
         {
-            XDocument doc = XDocument.Parse(VehicleXML(Language.ToString(), Id));
-            var vehicle_data = (from vehicle in doc.Descendants("vehicle")
+            var doc = XDocument.Parse(VehicleXML(Language.ToString(), id));
+
+            var vehicleData = (from vehicle in doc.Descendants("vehicle")
                                 select new
                                 {
                                     location_x = vehicle.Attribute("locationX").Value,
@@ -124,10 +117,12 @@ namespace NetRail.NMBS
                                     id = vehicle.Value
                                 }).First();
 
-            Vehicle v = new Vehicle();
-            v.Id = Id;
-            v.Latitude = float.Parse(vehicle_data.location_x);
-            v.Longitude = float.Parse(vehicle_data.location_y);
+            var v = new Vehicle
+                        {
+                            Id = id,
+                            Latitude = float.Parse(vehicleData.location_x),
+                            Longitude = float.Parse(vehicleData.location_y)
+                        };
 
             var stops = from stop in doc.Descendants("stop")
                         select new Stop
@@ -136,7 +131,7 @@ namespace NetRail.NMBS
                             Time = DateTime.Parse(stop.Element("time").Attribute("formatted").Value)
                         };
 
-            v.Stops = stops.ToList<Stop>();
+            v.Stops = stops.ToList();
 
             return v;
         }
@@ -144,10 +139,10 @@ namespace NetRail.NMBS
         /// <summary>
         /// Initializes a new NMBS wrapper class with the specified language
         /// </summary>
-        /// <param name="Language">The language for the data to appear in</param>
-        public NMBS(NMBSLanguage Language)
+        /// <param name="language">The language for the data to appear in</param>
+        public NMBS(NMBSLanguage language)
         {
-            this.Language = Language;
+            Language = language;
         }
 
         /// <summary>
@@ -163,9 +158,10 @@ namespace NetRail.NMBS
         /// </summary>
         /// <param name="lang">The language to be used</param>
         /// <returns>a string containing the XML data returned by the server</returns>
-        private string StationsXML(String lang) {
-            WebClient client = new WebClient();
-            return client.DownloadString(String.Format("{0}/{1}/?lang={2}", BASE_URL, "stations", lang));
+        private string StationsXML(string lang) {
+            var client = new WebClient();
+
+            return client.DownloadString(String.Format("{0}/{1}/?lang={2}", BaseUrl, "stations", lang));
         }
 
         /// <summary>
@@ -174,10 +170,11 @@ namespace NetRail.NMBS
         /// <param name="lang">The required language for the data</param>
         /// <param name="id">The ID of the station</param>
         /// <returns>a string containing the XML data returned by the server</returns>
-        private string DeparturesXML(String lang, String id)
+        private string DeparturesXML(string lang, string id)
         {
-            WebClient client = new WebClient();
-            return client.DownloadString(String.Format("{0}/{1}/?id={3}&lang={2}", BASE_URL, "liveboard", lang, id));
+            var client = new WebClient();
+
+            return client.DownloadString(String.Format("{0}/{1}/?id={3}&lang={2}", BaseUrl, "liveboard", lang, id));
         }
 
         /// <summary>
@@ -188,8 +185,9 @@ namespace NetRail.NMBS
         /// <returns></returns>
         private string VehicleXML(String lang, String id)
         {
-            WebClient client = new WebClient();
-            return client.DownloadString(String.Format("{0}/{1}/?id={3}&lang={2}", BASE_URL, "vehicle", lang, id));
+            var client = new WebClient();
+
+            return client.DownloadString(String.Format("{0}/{1}/?id={3}&lang={2}", BaseUrl, "vehicle", lang, id));
         }
     }
 }

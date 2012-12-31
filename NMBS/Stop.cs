@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NetRail.NMBS
 {
@@ -14,6 +11,7 @@ namespace NetRail.NMBS
         /// The time the vehicle stops in the station
         /// </summary>
         public DateTime Time { get; set; }
+
         /// <summary>
         /// The station in which the vehicle stops
         /// </summary>

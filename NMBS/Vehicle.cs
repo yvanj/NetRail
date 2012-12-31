@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace NetRail.NMBS
 {
@@ -24,13 +21,10 @@ namespace NetRail.NMBS
         /// The longitude of the vehicle
         /// </summary>
         public float Longitude { get; set; }
+
         /// <summary>
         /// The list of stations in which this train stops.
         /// </summary>
-        public List<Stop> Stops
-        {
-            get;
-            set;
-        }
+        public IList<Stop> Stops { get; set; }
     }
 }
