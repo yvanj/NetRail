@@ -8,7 +8,7 @@ namespace NetRail.NMBS
     /// <summary>
     /// The data structure containing station information.
     /// </summary>
-    class Station
+    public class Station
     {
         /// <summary>
         /// The ID of the station

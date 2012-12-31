@@ -8,7 +8,7 @@ namespace NetRail.NMBS
     /// <summary>
     /// The data structure containing departure information
     /// </summary>
-    class Departure
+    public class Departure
     {
         /// <summary>
         /// The time the train departs.

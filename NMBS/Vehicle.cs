@@ -8,7 +8,7 @@ namespace NetRail.NMBS
     /// <summary>
     /// The data structure containing vehicle information
     /// </summary>
-    class Vehicle
+    public class Vehicle
     {
         /// <summary>
         /// The ID of the vehicle

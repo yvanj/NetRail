@@ -5,7 +5,22 @@ using System.Text;
 
 namespace NetRail.NMBS
 {
-    class NMBS
+    
+
+    public class NMBS
     {
+        /// <summary>
+        /// Gets the list of stations
+        /// </summary>
+        /// <returns>A list of stations</returns>
+        public List<Station> Stations()
+        {
+            return null;
+        }
+
+        public NMBS()
+        {
+
+        }
     }
 }

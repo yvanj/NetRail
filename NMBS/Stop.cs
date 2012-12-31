@@ -8,7 +8,7 @@ namespace NetRail.NMBS
     /// <summary>
     /// The model for a stop from a vehicle.
     /// </summary>
-    class Stop
+    public class Stop
     {
         /// <summary>
         /// The time the vehicle stops in the station
