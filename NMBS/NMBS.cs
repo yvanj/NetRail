@@ -183,7 +183,7 @@ namespace NetRail.NMBS
         /// <param name="lang">The language of the data</param>
         /// <param name="id">The ID of the vehicle</param>
         /// <returns></returns>
-        private string VehicleXML(String lang, String id)
+        private string VehicleXML(string lang, string id)
         {
             var client = new WebClient();
 
@@ -205,7 +205,7 @@ namespace NetRail.NMBS
 		/// <param name='toStation'>
 		/// The station of (planned) arrival
 		/// </param>
-		private string ConnectionXML(String lang, String fromStation, String toStation) {
+		private string ConnectionXML(string lang, string fromStation, string toStation) {
 			WebClient client = new WebClient();
 			return client.DownloadString(String.Format("{0}/{1}/?lang={2}&to={3}&from={4}", BASE_URL, "connections", lang, toStation, fromStation));
 		}
@@ -228,7 +228,7 @@ namespace NetRail.NMBS
 		/// <param name='momentOfDeparture'>
 		/// Moment of departure.
 		/// </param>
-		private string ConnectionXML(String lang, String fromStation, String toStation, DateTime momentOfDeparture) {
+		private string ConnectionXML(string lang, string fromStation, string toStation, string momentOfDeparture) {
 			WebClient client = new WebClient();
 			// TODO: update URL.
 			return client.DownloadString(String.Format("{0}/{1}/?lang={2}&to={3}&from={4}", BASE_URL, "connections", lang, toStation, fromStation));
