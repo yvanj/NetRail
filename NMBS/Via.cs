@@ -29,6 +29,23 @@ namespace NetRail.NMBS
 		public string ArrivalPlatform { get; set; }
 
 		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="NetRail.NMBS.Via"/> arrival platform changed.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if arrival platform changed; otherwise, <c>false</c>.
+		/// </value>
+		public bool ArrivalPlatformChanged { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="NetRail.NMBS.Via"/> departure platform changed.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if departure platform changed; otherwise, <c>false</c>.
+		/// </value>
+		public bool DeparturePlatformChanged {get;set;}
+
+
+		/// <summary>
 		/// Gets or sets the departure platform.
 		/// </summary>
 		/// <value>
