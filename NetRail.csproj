@@ -43,6 +43,8 @@
     <Compile Include="NMBS\Departure.cs" />
     <Compile Include="NMBS\NMBS.cs" />
     <Compile Include="NMBS\Station.cs" />
+    <Compile Include="NMBS\Stop.cs" />
+    <Compile Include="NMBS\Vehicle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
