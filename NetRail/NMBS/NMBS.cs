@@ -25,6 +25,24 @@ namespace NetRail.NMBS
         /// </summary>
         private NMBSLanguage Language {get;set;}
 
+
+        /// <summary>
+        /// Gets the station by its ID.
+        /// </summary>
+        /// <param name="id">The station ID.</param>
+        /// <returns>The station object associated with the ID, or Null if inexistent.</returns>
+        public Station GetStation(string id)
+        {
+            try
+            {
+                return Stations().First(p => p.Id == id);
+            }
+            catch (InvalidOperationException invalidop)
+            {
+                return null;
+            }
+        }
+
         /// <summary>
         /// Gets the list of stations
         /// </summary>
@@ -63,7 +81,7 @@ namespace NetRail.NMBS
             var data = from departure in doc.Descendants("departure")
                        select new Departure
                        {
-                            Direction = Stations().First(p => p.Id == departure.Element("station").Attribute("id").Value),
+                            Direction = GetStation(departure.Element("station").Attribute("id").Value),
                             Delay = int.Parse(departure.Attribute("delay").Value),
                             Platform = departure.Element("platform").Value,
                             PlatformChanged = departure.Element("platform").Attribute("normal").Value != "1",
@@ -124,20 +142,29 @@ namespace NetRail.NMBS
                             Longitude = float.Parse(vehicleData.location_y)
                         };
 
-            var stops = from stop in doc.Descendants("stop")
-                        select new Stop
-                        {
-                            Station = Stations().First(p => p.Id == stop.Element("station").Attribute("id").Value),
-                            Time = DateTime.Parse(stop.Element("time").Attribute("formatted").Value)
-                        };
+            try
+            {
+                var stops = from stop in doc.Descendants("stop")
+                            select new Stop
+                            {
+                                Station = GetStation(stop.Element("station").Attribute("id").Value),
+                                Time = DateTime.Parse(stop.Element("time").Attribute("formatted").Value)
+                            };
 
-            v.Stops = stops.ToList();
+                v.Stops = stops.ToList();
 
+            }
+            catch (InvalidOperationException invalidop)
+            {
+                // station could not be fetched, clearing stops.
+                v.Stops = new List<Stop>();
+            }
             return v;
         }
 
 		private IList<Via> parseVias (XElement viasElement)
 		{
+            
 			var vias = from via in viasElement.Descendants("via")
 				select new Via {
 				ArrivalPlatform = via.Element("arrival").Element("platform").Value,
@@ -147,8 +174,8 @@ namespace NetRail.NMBS
 				DeparturePlatformChanged = via.Element("departure").Element("platform").Attribute("normal").Value != "1",
 				DepartureTime = DateTime.Parse(via.Element("departure").Element("time").Attribute("formatted").Value),
 
-				Station = Stations().First(s => s.Id == via.Element("station").Attribute("id").Value),
-				DestinationStation = Stations().First(s => s.Id == via.Element("direction").Attribute("id").Value),
+				Station = GetStation(via.Element("station").Attribute("id").Value),
+				DestinationStation = GetStation(via.Element("direction").Attribute("id").Value),
 				VehicleUsed = Vehicle(via.Element("vehicle").Value),
 				TimeBetween = int.Parse(via.Element("timeBetween").Value),
 
@@ -168,8 +195,8 @@ namespace NetRail.NMBS
 		private IList<Connection> _parseConnections(XDocument documentToParse) {
 			var connections = from connection in documentToParse.Descendants("connection")
 			select new Connection {
-				DepartureStation = Stations().First(s => s.Id == connection.Element("departure").Element("station").Attribute("id").Value),
-				ArrivalStation = Stations().First(s => s.Id == connection.Element("arrival").Element("station").Attribute("id").Value),
+				DepartureStation = GetStation(connection.Element("departure").Element("station").Attribute("id").Value),
+				ArrivalStation = GetStation(connection.Element("arrival").Element("station").Attribute("id").Value),
 				ArrivalPlatform = connection.Element("arrival").Element("platform").Value,
 				ArrivalPlatformChanged = connection.Element("arrival").Element("platform").Attribute("normal").Value != "1",
 				DeparturePlatformChanged = connection.Element("departure").Element("platform").Attribute("normal").Value != "1",
