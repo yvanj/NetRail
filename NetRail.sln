@@ -1,20 +1,52 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetRail", "NetRail.csproj", "{D91995DD-F14D-4493-A125-0D0918862CF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetRail", "NetRail\NetRail.csproj", "{D91995DD-F14D-4493-A125-0D0918862CF7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0CC67702-E2E6-4E96-841D-7E257AD4A120}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		NetRail.vsmdi = NetRail.vsmdi
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetRailUnitTests", "NetRailUnitTests\NetRailUnitTests.csproj", "{46763179-EB48-4939-AF33-6DB46A2AC029}"
 EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = NetRail.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D91995DD-F14D-4493-A125-0D0918862CF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D91995DD-F14D-4493-A125-0D0918862CF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D91995DD-F14D-4493-A125-0D0918862CF7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D91995DD-F14D-4493-A125-0D0918862CF7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D91995DD-F14D-4493-A125-0D0918862CF7}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{D91995DD-F14D-4493-A125-0D0918862CF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D91995DD-F14D-4493-A125-0D0918862CF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D91995DD-F14D-4493-A125-0D0918862CF7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D91995DD-F14D-4493-A125-0D0918862CF7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D91995DD-F14D-4493-A125-0D0918862CF7}.Release|x86.ActiveCfg = Release|Any CPU
+		{46763179-EB48-4939-AF33-6DB46A2AC029}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46763179-EB48-4939-AF33-6DB46A2AC029}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46763179-EB48-4939-AF33-6DB46A2AC029}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{46763179-EB48-4939-AF33-6DB46A2AC029}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{46763179-EB48-4939-AF33-6DB46A2AC029}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{46763179-EB48-4939-AF33-6DB46A2AC029}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46763179-EB48-4939-AF33-6DB46A2AC029}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46763179-EB48-4939-AF33-6DB46A2AC029}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{46763179-EB48-4939-AF33-6DB46A2AC029}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{46763179-EB48-4939-AF33-6DB46A2AC029}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = NetRail.csproj
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
