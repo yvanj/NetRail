@@ -54,13 +54,13 @@ namespace NetRail.NMBS
 		public Vehicle VehicleUsed {get;set;}
 
 		/// <summary>
-		/// Gets or sets the arrival station.
+		/// Gets or sets the station.
 		/// This is the station in which you make the transit to another train.
 		/// </summary>
 		/// <value>
-		/// The arrival station.
+		/// The station.
 		/// </value>
-		public Station ArrivalStation { get; set; }
+		public Station Station { get; set; }
 
 		/// <summary>
 		/// Gets or sets the destination station.
