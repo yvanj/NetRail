@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace NetRail.NMBS
 {
@@ -14,14 +11,17 @@ namespace NetRail.NMBS
         /// The ID of the station
         /// </summary>
         public string Id { get; set; }
+
         /// <summary>
         /// The name of the station
         /// </summary>
         public string Name { get; set; }
+
         /// <summary>
         /// The longitude of the station
         /// </summary>
         public float Longitude { get; set; }
+
         /// <summary>
         /// The latitude of the station
         /// </summary>
@@ -30,18 +30,12 @@ namespace NetRail.NMBS
         /// <summary>
         /// A list of the current departures in the station
         /// </summary>
-        public List<Departure> Departures
+        public IList<Departure> Departures
         {
-            
             get
             {
-                NMBS n = new NMBS();
+                var n = new NMBS();
                 return n.Liveboard(this);
-            }
-            set
-            {
-
-
             }
         }
     }
